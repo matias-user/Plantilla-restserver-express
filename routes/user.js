@@ -1,15 +1,38 @@
 const { Router } = require('express');
-const { getUser, updateUser, deleteUser, createUser } = require('../controllers');
+const { getUsers, updateUser, deleteUser, createUser } = require('../controllers');
+const { check } = require('express-validator');
+const { validateErrors } = require('../middlewares/validationErrors');
+const { isValidateRole, existEmail, existUserById } = require('../helpers/db-validators');
 
 const router = Router();
 
-router.get('/', getUser);
+router.get('/', getUsers);
 
-router.put('/:id', updateUser);
+router.put('/:id',[
+    check('id','El id enviado no es válido').isMongoId(),
+    check('id').custom( existUserById ),
+    check('role').custom( isValidateRole ),
+    validateErrors
+],updateUser);
 
-router.post('/', createUser);
+router.post('/',[
+    check( 'email', 'Formato de correo no es valido' ).isEmail(),
+    check('email','El correo es obligatorio').not().isEmpty(),
+    check('email').custom( existEmail ),
+    check('name','El nombre es obligatorio').not().isEmpty(),
+    check('password','El password debe de ser mayor a 6 letras').isLength({min :6}),
+    check('role','El rol es obligatorio').not().isEmpty(),
+    check('role').custom( isValidateRole ),
+    // No es dinamico
+    // check('role','No es un rol permitido').isIn(['ADMIN_ROLE','USER_ROLE']),
+    validateErrors
+],createUser);
 
-router.delete('/', deleteUser);
+router.delete('/:id',[
+    check('id','El id enviado no es valido').isMongoId(),
+    check('id').custom( existUserById ),
+    validateErrors
+],deleteUser);
 
 
 module.exports = router;

@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 
 const router = require('../routes/user');
+const { DBconnection } = require('../database/config');
 
 class Server {
 
@@ -10,10 +11,9 @@ class Server {
         this.app = express();
         this.port = process.env.PORT;
         this.usersPath = '/api/usuarios';
-
-
-        this.middlewares();
         
+        this.connectDB();    
+        this.middlewares();
         this.routes();
     };
     
@@ -24,6 +24,9 @@ class Server {
         // BODY PARSE
         this.app.use( bodyParser.json() );
     };
+    connectDB(){
+        DBconnection();
+    }
 
     routes() {
         this.app.use( this.usersPath, require('../routes/user') );

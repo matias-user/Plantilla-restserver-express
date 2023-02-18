@@ -1,4 +1,4 @@
-const { getUser
+const { getUsers
     ,updateUser
     ,deleteUser
     ,createUser } = require('./user');
@@ -6,7 +6,7 @@ const { getUser
 
     
 module.exports = {
-    getUser,
+    getUsers,
     updateUser,
     deleteUser,
     createUser
