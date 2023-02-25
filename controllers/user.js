@@ -33,7 +33,6 @@ const updateUser = async(req = request, res = response) => {
     const { id } = req.params;
     const { _id, password, google, email, ...rest } = req.body;
 
-    
     if( password ){
         const encryptPassword = bcrypt.hashSync(password, 10);
         rest.password = encryptPassword;
@@ -46,11 +45,15 @@ const updateUser = async(req = request, res = response) => {
 
 const deleteUser = async(req, res = response) => {
     const { id } = req.params;
-    await User.findByIdAndUpdate( id, {state:false});
+    const user = await User.findByIdAndUpdate( id, {state:false});
+
+    // Obtener usuario autenticado
+    // const authenticatedUser = req.user;
 
     res.status(200).json({
-        id
-    })
+        usuario:user,
+        // usuarioAutenticado:authenticatedUser
+    });
 };
 
 const createUser = async(req = request, res = response, next) => {
@@ -72,7 +75,11 @@ const createUser = async(req = request, res = response, next) => {
     }
 
     // hash pass
-
+    if( password ){
+        const encryptPassword = bcrypt.hashSync(password, 10);
+        user.password = encryptPassword;
+        
+    }
     
     await user.save();
 
