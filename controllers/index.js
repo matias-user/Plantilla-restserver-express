@@ -3,7 +3,7 @@ const { getUsers
     ,deleteUser
     ,createUser } = require('./user');
 
-const { login } = require('./auth');
+const { login, googleSignIn } = require('./auth');
 
     
 module.exports = {
@@ -11,5 +11,6 @@ module.exports = {
     updateUser,
     deleteUser,
     createUser,
-    login
+    login,
+    googleSignIn
 }
